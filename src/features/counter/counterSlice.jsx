@@ -6,6 +6,9 @@ const initialState = {
     allProducts: [],
     category: "",
     allCategory: [],
+    units: [],
+    controller: null,
+    books: []
 }
 
 export const counterSlice = createSlice({
@@ -31,7 +34,17 @@ export const counterSlice = createSlice({
         setAllProducts: (state, action) => {
             state.allProducts = action.payload;
         },
+        setAllBooks: (state, action) => {
+            state.books = action.payload;
+        },
+        setAllUnits: (state, action) => {
+            state.units = action.payload;
+        },
+        setAllContr: (state, action) => {
+            state.controller = action.payload;
+        },
         setAllCategory: (state, action) => {
+
             state.allCategory = action.payload;
         },
         setCategory: (state, action) => {
@@ -41,6 +54,6 @@ export const counterSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { increment, decrement, incrementByAmount, isSavedment, setAllProducts, setCategory, setAllCategory } = counterSlice.actions
+export const { setAllContr, setAllUnits, increment, setAllBooks, decrement, incrementByAmount, isSavedment, setAllProducts, setCategory, setAllCategory } = counterSlice.actions
 
 export default counterSlice.reducer

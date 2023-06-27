@@ -1,28 +1,26 @@
 import axios from "axios";
-const BASE_URL = "https://sapid.onrender.com";
+const BASE_URL = "http://localhost:5000";
 const API = {
-    getData: async (category) => {
+    getDataBook: async () => {
         try {
-            if (category) {
-                if (category.toLowerCase().trim() == String("all Products").toLocaleLowerCase().trim()) {
-                    const res = await axios.get(`${BASE_URL}/api/product`);
-                    return res.data;
-                } else {
-                    const res = await axios.get(`${BASE_URL}/api/product?category=${category}`);
-                    return res.data;
-                }
-            } else {
-                const res = await axios.get(`${BASE_URL}/api/product`);
-                return res.data;
-            }
+            const headers = {
+                'Content-Type': 'application/json', // Muhim: Kerakli tahlil bilan almashtiring
+                'token': localStorage.getItem("token") // Kerakli autentifikatsiya xati bilan almashtiring
+            };
+            const res = await axios.get(`${BASE_URL}/api/books`, { headers });
+            return res.data;
         } catch (error) {
             console.log('error :', error);
             return null;
         }
     },
-    getDataByCategory: async (category) => {
+    getDataUnits: async () => {
         try {
-            const res = await axios.get(`${BASE_URL}/api/product?category=${category}`);
+            const headers = {
+                'Content-Type': 'application/json', // Muhim: Kerakli tahlil bilan almashtiring
+                'token': localStorage.getItem("token") // Kerakli autentifikatsiya xati bilan almashtiring
+            };
+            const res = await axios.get(`${BASE_URL}/api/units`, { headers });
             return res.data;
         } catch (error) {
             console.log('error :', error);
@@ -30,8 +28,12 @@ const API = {
         }
     },
     getDataById: async (id) => {
+        const headers = {
+            'Content-Type': 'application/json', // Muhim: Kerakli tahlil bilan almashtiring
+            'token': localStorage.getItem("token") // Kerakli autentifikatsiya xati bilan almashtiring
+        };
         try {
-            const res = await axios.get(`${BASE_URL}/api/product?id=${id}`);
+            const res = await axios.get(`${BASE_URL}/api/books/${id}`, { headers });
             return res.data;
         } catch (error) {
             console.log('error :', error);
@@ -39,8 +41,12 @@ const API = {
         }
     },
     postData: async (data) => {
+        const headers = {
+            'Content-Type': 'application/json', // Muhim: Kerakli tahlil bilan almashtiring
+            'token': localStorage.getItem("token") // Kerakli autentifikatsiya xati bilan almashtiring
+        };
         try {
-            const res = await axios.post(`${BASE_URL}/api/LINK`, data);
+            const res = await axios.post(`${BASE_URL}/api/LINK`, data, { headers });
             return res.data;
         } catch (error) {
             console.log(error);
@@ -48,8 +54,12 @@ const API = {
         }
     },
     putData: async (id, data) => {
+        const headers = {
+            'Content-Type': 'application/json', // Muhim: Kerakli tahlil bilan almashtiring
+            'token': localStorage.getItem("token") // Kerakli autentifikatsiya xati bilan almashtiring
+        };
         try {
-            const res = await axios.put(`${BASE_URL}/api/LINK/${id}`, data);
+            const res = await axios.put(`${BASE_URL}/api/LINK/${id}`, data, { headers });
             return res.data;
         } catch (error) {
             console.log(error);
@@ -57,8 +67,12 @@ const API = {
         }
     },
     deleteData: async (id) => {
+        const headers = {
+            'Content-Type': 'application/json', // Muhim: Kerakli tahlil bilan almashtiring
+            'token': localStorage.getItem("token") // Kerakli autentifikatsiya xati bilan almashtiring
+        };
         try {
-            const res = await axios.delete(`${BASE_URL}/api/LINK/${id}`);
+            const res = await axios.delete(`${BASE_URL}/api/LINK/${id}`, { headers });
             return res.data;
         } catch (error) {
             console.log(error);
