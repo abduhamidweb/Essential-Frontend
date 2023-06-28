@@ -1,17 +1,20 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useState, useEffect } from "react";
 import { setAllContr } from "../features/counter/counterSlice";
+import { useNavigate } from "react-router-dom";
 
 const Controller = () => {
     const dispatch = useDispatch();
-    dispatch(setAllContr("ok"));
+    const navigate = useNavigate();
+
     const [contr, setContr] = useState({});
 
-    const { books, controller, units } = useSelector((state) => state.counter);
+    const { books, units } = useSelector((state) => state.counter);
     const [selectedBooks, setSelectedBooks] = useState([]);
     const [selectedUnits, setSelectedUnits] = useState([]);
     const [wordsCount, setWordsCount] = useState(0);
     const [count, setCount] = useState(0);
+    const [sort, setSort] = useState('');
 
     useEffect(() => {
         // Seçili birimler veya kitaplar değiştiğinde wordsCount'u güncelle
@@ -46,7 +49,19 @@ const Controller = () => {
             );
         }
     };
+    const handlerNavigate = () => {
+        if (selectedBooks.length && selectedUnits.length && wordsCount || count && sort) {
+            let allContrller = {
+                "booksId": selectedBooks,
+                "unitsId": selectedUnits,
+                "sort": sort,
+                "wordCount": count * 1 ? count * 1 : wordsCount * 1
+            };
 
+            dispatch(setAllContr(allContrller));
+            navigate("playgame")
+        }
+    }
     return (
         <>
             <div className="row">
@@ -83,10 +98,26 @@ const Controller = () => {
                         ))}
                 </div>
             </div>
-            <p>qancha soz bilan randomli o'yin o'ynaysiz. taxminan {count ? count : wordsCount} bilan o'ynamoqchimisiz. bu ko'pmasmi?</p>
-            <input type="range" max={wordsCount} maxLength={wordsCount}  onChange={(e) => {
-                setCount(e.target.value);
-            }} />
+            <div className="col-12">
+                <select onChange={(e) => {
+                    setSort(e.target.value);
+                }}>
+                    <option selected disabled>sort</option>
+                    <option value={"random"}> random</option>
+                    <option defaultValue={"uzb"} value={"uzb"}> Eng tu Uzb</option>
+                    <option value={"eng"}> Uzb to Eng</option>
+                </select>
+            </div>
+            <div className="col-12">
+                <p>qancha soz bilan randomli o'yin o'ynaysiz. taxminan {count ? count : wordsCount} bilan o'ynamoqchimisiz. bu ko'pmasmi?</p>
+                <input type="range" max={wordsCount} maxLength={wordsCount} onChange={(e) => {
+                    setCount(e.target.value);
+                }} />
+            </div>
+            <div className="col-12">
+                <button className="btn btn-info w-100 mt-3 p-3" onClick={() => handlerNavigate()}>play game</button>
+            </div>
+
         </>
     );
 };

@@ -12,6 +12,8 @@ const Data = () => {
         let units = await API.API.getDataUnits();
         dispatch(setAllUnits(units));
     }
+
+
     useEffect(() => {
         getDataBooks();
         getDataUnits()
