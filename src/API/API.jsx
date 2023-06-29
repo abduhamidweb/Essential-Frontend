@@ -66,6 +66,19 @@ const API = {
             return null;
         }
     },
+    postEndPlay: async (data) => {
+        const headers = {
+            'Content-Type': 'application/json', // Muhim: Kerakli tahlil bilan almashtiring
+            token: localStorage.getItem("token") // Kerakli autentifikatsiya xati bilan almashtiring
+        };
+        try {
+            const res = await axios.post(`${BASE_URL}/api/end`, data, { headers });
+            return res.data;
+        } catch (error) {
+            console.log(error);
+            return null;
+        }
+    },
     putData: async (id, data) => {
         const headers = {
             'Content-Type': 'application/json', // Muhim: Kerakli tahlil bilan almashtiring

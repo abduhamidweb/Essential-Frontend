@@ -5,6 +5,10 @@ import { useEffect, useState } from "react";
 
 const Playgame = () => {
     const { controller, startDate } = useSelector((state) => state.counter);
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const [selectedVariant, setSelectedVariant] = useState('');
+    const [updatedArray, setUpdatedArray] = useState([]);
+
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -17,10 +21,8 @@ const Playgame = () => {
             }
         }
         getStartData();
+
     }, []);
-    const [currentIndex, setCurrentIndex] = useState(0);
-    const [selectedVariant, setSelectedVariant] = useState('');
-    const [updatedArray, setUpdatedArray] = useState([]);
 
     const handleNextQuestion = () => {
         if (currentIndex === startDate.length - 1) {
@@ -32,6 +34,7 @@ const Playgame = () => {
 
     const handleVariantChange = (event) => {
         setSelectedVariant(event.target.value);
+        // handleCheckAnswer()
     };
 
     const handleCheckAnswer = () => {
@@ -49,10 +52,25 @@ const Playgame = () => {
         setSelectedVariant('');
     };
 
-    if (currentIndex >= startDate.length) {
-        return <div>All questions answered!</div>;
-    }
+    useEffect(() => {
+        async function postEndData() {
+            try {
+                if (currentIndex >= startDate.length) {
+                    const endDataResponse = await API.API.postEndPlay(updatedArray);
+                    // Handle the end data response as needed
+                }
+            } catch (error) {
+                console.log("Error occurred while posting end data:", error);
+            }
+        }
+        if (currentIndex >= startDate.length) {
+            postEndData();
+        }
 
+    }, [updatedArray])
+    if (currentIndex >= startDate.length) {
+        return "sa"
+    }
     const currentQuestion = startDate[currentIndex];
 
     return (
