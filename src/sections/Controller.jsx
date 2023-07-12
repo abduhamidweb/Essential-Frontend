@@ -6,9 +6,6 @@ import { useNavigate } from "react-router-dom";
 const Controller = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-
-    const [contr, setContr] = useState({});
-
     const { books, units } = useSelector((state) => state.counter);
     const [selectedBooks, setSelectedBooks] = useState([]);
     const [selectedUnits, setSelectedUnits] = useState([]);
@@ -82,7 +79,6 @@ const Controller = () => {
                 </div>
                 <div className="col-lg-4 col-md-4 col-sm-12">
                     <h2>Unitlar</h2>
-
                     {units
                         .filter(unit => selectedBooks.includes(unit.bookId))
                         .map(unit => (

@@ -8,7 +8,9 @@ const Playgame = () => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [selectedVariant, setSelectedVariant] = useState('');
     const [updatedArray, setUpdatedArray] = useState([]);
-
+    const [correctData, setCorrectData] = useState([]);
+    const [incorrectData, setIncorrectData] = useState([]);
+    const [errorData, setErrorData] = useState([]);
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -21,79 +23,84 @@ const Playgame = () => {
             }
         }
         getStartData();
-
     }, []);
 
-    const handleNextQuestion = () => {
-        if (currentIndex === startDate.length - 1) {
-            console.log(startDate); // Array with all questions and answers
-        } else {
-            setCurrentIndex(prevIndex => prevIndex + 1);
-        }
-    };
-
     const handleVariantChange = (event) => {
-        setSelectedVariant(event.target.value);
-        // handleCheckAnswer()
+        const variant = event.target.value;
+        setSelectedVariant(variant);
+        handleCheckAnswer(variant);
     };
 
-    const handleCheckAnswer = () => {
+    const handleCheckAnswer = (variant) => {
         const currentQuestion = startDate[currentIndex];
         const updatedQuestion = {
             ...currentQuestion,
-            answer: selectedVariant
+            answer: variant || null
         };
 
         const newArray = [...updatedArray];
         newArray[currentIndex] = updatedQuestion;
         setUpdatedArray(newArray);
-
         setCurrentIndex(prevIndex => prevIndex + 1);
         setSelectedVariant('');
     };
 
-    useEffect(() => {
-        async function postEndData() {
-            try {
-                if (currentIndex >= startDate.length) {
-                    const endDataResponse = await API.API.postEndPlay(updatedArray);
-                    // Handle the end data response as needed
-                }
-            } catch (error) {
-                console.log("Error occurred while posting end data:", error);
+    async function postEndData() {
+        try {
+            if (currentIndex >= startDate.length) {
+                const { correct, incorrect, errorRes } = await API.API.postEndPlay(updatedArray);
+                setCorrectData([...correct]);
+                setIncorrectData([...incorrect]);
+                setErrorData([...errorRes]);
             }
+        } catch (error) {
+            console.log("Error occurred while posting end data:", error);
         }
+    }
+
+    useEffect(() => {
         if (currentIndex >= startDate.length) {
             postEndData();
         }
+    }, [currentIndex, startDate.length, updatedArray]);
 
-    }, [updatedArray])
-    if (currentIndex >= startDate.length) {
-        return "sa"
-    }
     const currentQuestion = startDate[currentIndex];
 
     return (
         <div>
-            <h3>{currentQuestion.question}</h3>
-            <div>
-                {currentQuestion.variants.map(variant => (
-                    <label key={variant}>
-                        <input
-                            type="radio"
-                            value={variant}
-                            checked={selectedVariant === variant}
-                            onChange={handleVariantChange}
-                        />
-                        {variant}
-                    </label>
-                ))}
-            </div>
-            <button onClick={handleCheckAnswer}>Check Answer</button>
-            <button onClick={handleNextQuestion}>Next Question</button>
-            <div>
-                <pre>{JSON.stringify(updatedArray, null, 2)}</pre>
-            </div>
+            {currentIndex < startDate.length ? (
+                <>
+                    <h3>{currentQuestion.question}</h3>
+                    <div>
+                        {currentQuestion.variants.map(variant => (
+                            <label key={variant}>
+                                <input
+                                    type="radio"
+                                    value={variant}
+                                    checked={selectedVariant === variant}
+                                    onChange={handleVariantChange}
+                                />
+                                {variant}
+                            </label>
+                        ))}
+                    </div>
+                </>
+            ) : (
+                <>
+                    <h3>Correct Answers:</h3>
+                    {correctData.map(item => (
+                        <p key={item._id}>{item.question} - {item.answer}</p>
+                    ))}
+                    <h3>Incorrect Answers:</h3>
+                    {incorrectData.map(item => (
+                        <p key={item._id}>{item.question} - {item.answer}</p>
+                    ))}
+                    <h3>Error Responses:</h3>
+                    {errorData.map(item => (
+                        <p key={item._id}>{item.question} - {item.answer}</p>
+                    ))}
+                </>
+            )}
         </div>
     );
 };

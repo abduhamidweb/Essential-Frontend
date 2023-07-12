@@ -41,12 +41,8 @@ const API = {
         }
     },
     postUser: async (data) => {
-        const headers = {
-            'Content-Type': 'application/json', // Muhim: Kerakli tahlil bilan almashtiring
-            'token': localStorage.getItem("token") // Kerakli autentifikatsiya xati bilan almashtiring
-        };
         try {
-            const res = await axios.post(`${BASE_URL}/api/users`, data, { headers });
+            const res = await axios.post(`${BASE_URL}/api/users`, data);
             return res.data;
         } catch (error) {
             console.log(error);
