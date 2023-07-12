@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import API from "../API/API";
 import { setStartData } from "../features/counter/counterSlice";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Playgame = () => {
     const { controller, startDate } = useSelector((state) => state.counter);
@@ -12,6 +13,7 @@ const Playgame = () => {
     const [incorrectData, setIncorrectData] = useState([]);
     const [errorData, setErrorData] = useState([]);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     useEffect(() => {
         async function getStartData() {
@@ -87,7 +89,7 @@ const Playgame = () => {
                 </>
             ) : (
                 <>
-                    <h3>Correct Answers:</h3>
+                    <h3>Correct Answers: </h3>
                     {correctData.map(item => (
                         <p key={item._id}>{item.question} - {item.answer}</p>
                     ))}
@@ -99,6 +101,9 @@ const Playgame = () => {
                     {errorData.map(item => (
                         <p key={item._id}>{item.question} - {item.answer}</p>
                     ))}
+                    <button onClick={() => {
+                        navigate("/")
+                    }}>try again</button>
                 </>
             )}
         </div>

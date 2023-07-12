@@ -9,8 +9,9 @@ const AUH = () => {
         e.preventDefault()
         e.preventDefault();
         let { token } = await API.API.postUser({ username: sa });
-        if (token) navigate("/");
         token ? localStorage.setItem("token", token) : undefined;
+       
+        token ? navigate("/") :""
     }
     return (
         <>

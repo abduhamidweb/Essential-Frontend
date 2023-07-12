@@ -66,7 +66,7 @@ const Controller = () => {
                     <h2>Kitoblar</h2>
                 </div>
                 <div className="col-lg-4 col-md-4 col-sm-12">
-                    {books.map(book => (
+                    {books ? books.map(book => (
                         <li key={book._id}>
                             <h3>{book.bookname.substring(30, 1000)}</h3>
                             <input
@@ -75,11 +75,11 @@ const Controller = () => {
                                 onChange={event => handleBookCheckboxChange(event, book._id)}
                             />
                         </li>
-                    ))}
+                    )) : null}
                 </div>
                 <div className="col-lg-4 col-md-4 col-sm-12">
                     <h2>Unitlar</h2>
-                    {units
+                    {units ? units
                         .filter(unit => selectedBooks.includes(unit.bookId))
                         .map(unit => (
                             <li key={unit._id}>
@@ -91,7 +91,7 @@ const Controller = () => {
                                     onChange={event => handleUnitCheckboxChange(event, unit._id)}
                                 />
                             </li>
-                        ))}
+                        )) : null}
                 </div>
             </div>
             <div className="col-12">
