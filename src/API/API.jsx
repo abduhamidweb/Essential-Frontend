@@ -11,7 +11,8 @@ const API = {
             return res.data;
         } catch (error) {
             console.log('error :', error);
-            return null;
+            console.log('error.response.status :', error.response.status);
+                return null;
         }
     },
     getDataUnits: async () => {
