@@ -11,7 +11,7 @@ const Controller = () => {
     const [selectedUnits, setSelectedUnits] = useState([]);
     const [wordsCount, setWordsCount] = useState(0);
     const [count, setCount] = useState(0);
-    const [sort, setSort] = useState('');
+    const [sort, setSort] = useState('random');
 
     useEffect(() => {
         // Seçili birimler veya kitaplar değiştiğinde wordsCount'u güncelle
