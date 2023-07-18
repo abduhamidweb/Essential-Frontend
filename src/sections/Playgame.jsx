@@ -9,16 +9,17 @@ const Playgame = () => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [selectedVariant, setSelectedVariant] = useState('');
     const [updatedArray, setUpdatedArray] = useState([]);
+    const [cloneUpdatedArray, setCloneUpdatedArray] = useState([]);
     const [correctData, setCorrectData] = useState([]);
     const [incorrectData, setIncorrectData] = useState([]);
     const [errorData, setErrorData] = useState([]);
     const dispatch = useDispatch();
     const navigate = useNavigate();
-
     useEffect(() => {
         async function getStartData() {
             try {
                 const startDataResponse = await API.API.postStartPlay(controller);
+                setCloneUpdatedArray([...startDataResponse]);
                 dispatch(setStartData(startDataResponse));
             } catch (error) {
                 console.log("Error occurred while fetching start data:", error);
@@ -26,31 +27,28 @@ const Playgame = () => {
         }
         getStartData();
     }, []);
-
     const handleVariantChange = (event) => {
         const variant = event.target.value;
         setSelectedVariant(variant);
         handleCheckAnswer(variant);
     };
-
     const handleCheckAnswer = (variant) => {
         const currentQuestion = startDate[currentIndex];
         const updatedQuestion = {
             ...currentQuestion,
             answer: variant || null
         };
-
         const newArray = [...updatedArray];
         newArray[currentIndex] = updatedQuestion;
         setUpdatedArray(newArray);
         setCurrentIndex(prevIndex => prevIndex + 1);
         setSelectedVariant('');
     };
-
     async function postEndData() {
         try {
             if (currentIndex >= startDate.length) {
-                const { correct, incorrect, errorRes } = await API.API.postEndPlay(updatedArray);
+                const { correct, incorrect, errorRes, books } = await API.API.postEndPlay(updatedArray);
+                console.log('books :', books);
                 setCorrectData([...correct]);
                 setIncorrectData([...incorrect]);
                 setErrorData([...errorRes]);
@@ -59,17 +57,38 @@ const Playgame = () => {
             console.log("Error occurred while posting end data:", error);
         }
     }
-
     useEffect(() => {
         if (currentIndex >= startDate.length) {
             postEndData();
         }
     }, [currentIndex, startDate.length, updatedArray]);
     const currentQuestion = startDate[currentIndex];
-
+    function shuffle(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            const temp = array[i];
+            array[i] = array[j];
+            array[j] = temp;
+        }
+        return array;
+    }
+    function findMatchingElements(correctData, allData) {
+        const matchingElements = [];
+        for (let i = 0; i < correctData.length; i++) {
+            const unitId = correctData[i].unitId;
+            for (let j = 0; j < allData.length; j++) {
+                if (allData[j].unitId === unitId) {
+                    matchingElements.push(allData[j]);
+                    break; // Ichki tsikldan chiqish uchun break ishlatamiz
+                }
+            }
+        }
+        return matchingElements;
+    }
     let allWordsTryAgain = () => {
-        async function getStartData() {
+        async function getStartData() {     
             try {
+                dispatch(setStartData(shuffle([...cloneUpdatedArray])));
                 setCurrentIndex(0);
                 setCorrectData([]);
                 setIncorrectData([]);
@@ -82,25 +101,28 @@ const Playgame = () => {
     }
     let allCorrectWordsTryAgain = () => {
         if (correctData.length) {
-            console.log("try again");
+            const matchedElements = findMatchingElements(correctData, updatedArray);
+            dispatch(setStartData([]));
+            setUpdatedArray([...matchedElements]);
+            dispatch(setStartData(shuffle([...matchedElements])));
+            setCurrentIndex(0);
+            setCorrectData([]);
+            setIncorrectData([]);
+            setErrorData([]);
         }
     }
     let allInCorrectWordsTryAgain = () => {
         if (incorrectData.length) {
-            console.log("try again");
+            const matchedElements = findMatchingElements(incorrectData, updatedArray);
+            dispatch(setStartData([]));
+            setUpdatedArray([...matchedElements]);
+            dispatch(setStartData(shuffle([...matchedElements])));
+            setCurrentIndex(0);
+            setCorrectData([]);
+            setIncorrectData([]);
+            setErrorData([]);
         }
-    }
-    // if (currentIndex >= startDate.length && currentIndex != 0 && startDate.length != 0) {
-    //     if (correctData.length) {
-    //         dispatch(setCorrect(correctData))
-    //     } else if (incorrectData.length) {
-    //         dispatch(setInCorrect(incorrectData));
-    //     }
-    //     else if (errorData.length) {
-    //         dispatch(setInCorrect(errorData));
-    //     }
-    //     return navigate("/tryagain")
-    // }
+    };
     return (
         <div>
             {currentIndex < startDate.length ? (
@@ -144,5 +166,4 @@ const Playgame = () => {
         </div>
     );
 };
-
 export default Playgame;
