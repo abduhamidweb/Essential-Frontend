@@ -47,8 +47,7 @@ const Playgame = () => {
     async function postEndData() {
         try {
             if (currentIndex >= startDate.length) {
-                const { correct, incorrect, errorRes, books } = await API.API.postEndPlay(updatedArray);
-                console.log('books :', books);
+                const { correct, incorrect, errorRes } = await API.API.postEndPlay(updatedArray);
                 setCorrectData([...correct]);
                 setIncorrectData([...incorrect]);
                 setErrorData([...errorRes]);

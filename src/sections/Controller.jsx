@@ -68,7 +68,7 @@ const Controller = () => {
                 <div className="col-lg-4 col-md-4 col-sm-12">
                     {books ? books.map(book => (
                         <li key={book._id}>
-                            <h3>{book.bookname.substring(30, 1000)}</h3>
+                            <h3>{book.bookname}</h3>
                             <input
                                 type="checkbox"
                                 checked={selectedBooks.includes(book._id)}
